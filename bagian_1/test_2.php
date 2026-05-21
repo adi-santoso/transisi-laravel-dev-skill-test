@@ -2,7 +2,7 @@
 
 $textExample = isset($_POST['text_example']) ? $_POST['text_example'] : null;
 
-function countUpperCaseLetter($text)
+function countLowerCaseCharacter($text)
 {
     return preg_match_all('/[a-z]/', $text);
 }
@@ -26,7 +26,7 @@ function countUpperCaseLetter($text)
 
     <?php
     if($textExample!==null){
-        echo '"'.$textExample."\" mengandung ". countUpperCaseLetter($textExample). " buah huruf kecil";
+        echo '"'.$textExample."\" mengandung ". countLowerCaseCharacter($textExample). " buah huruf kecil";
     }
     ?>
 </div>

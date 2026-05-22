@@ -4,8 +4,8 @@ namespace App\Services;
 
 use App\Repositories\Contracts\CompanyRepositoryInterface;
 use Illuminate\Database\QueryException;
-use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
@@ -20,8 +20,14 @@ class CompanyService
         $this->companyRepository = $companyRepository;
     }
 
-    public function paginateList(){
+    public function paginateList()
+    {
         return $this->companyRepository->paginateList();
+    }
+
+    public function paginateForSelect2(?string $search, int $page, int $perPage = 10): LengthAwarePaginator
+    {
+        return $this->companyRepository->paginateForSelect2($search, $page, $perPage);
     }
 
     public function store(array $data, ?UploadedFile $logo){

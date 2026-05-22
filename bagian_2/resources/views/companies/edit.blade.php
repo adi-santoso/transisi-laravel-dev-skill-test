@@ -6,7 +6,7 @@
 
         <form class="mt-3" method="POST" action="{{route('companies.update', $company->id)}}" enctype="multipart/form-data">
             @csrf
-            @method('PATCH')
+            @method('PUT')
             @include('companies._form')
         </form>
     </div>

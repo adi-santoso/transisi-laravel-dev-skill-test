@@ -1,5 +1,5 @@
 <div class="d-flex flex-column">
-    <div class="group">
+    <div class="form-input">
         <label class="form-label">Nama</label>
         <input class="form-control @error('name') is-invalid @enderror" type="text" name="name" value="{{old('name', $company->name ??' ')}}" required>
         @error('name')

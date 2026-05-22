@@ -12,6 +12,7 @@
                 <th>No</th>
                 <th>Nama</th>
                 <th>Email</th>
+                <th>Jumlah Employee</th>
                 <th>Logo</th>
                 <th>Website</th>
                 <th>Aksi</th>
@@ -24,6 +25,7 @@
                     </td>
                     <td>{{$company->name}}</td>
                     <td>{{$company->email}}</td>
+                    <td>{{$company->employees_count}}</td>
                     <td>
                         <img src="{{ route('companies.logo', $company) }}"
                              style="max-height: 50px;" class="d-block mb-1">
@@ -38,7 +40,15 @@
                             <form method="post" action="{{route('companies.destroy', $company->id)}}">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" class="btn btn-danger" onclick="return confirm('Yakin ingin Hapus?');">
+                                @php
+                                    $count = $company->employees_count;
+                                    $confirmMsg = "Hapus company {$company->name}?";
+                                    if ($count > 0) {
+                                        $confirmMsg .= "\\n\\n{$count} employee terkait juga akan ikut terhapus.";
+                                    }
+                                    $confirmMsg .= "\\n\\nLanjutkan?";
+                                @endphp
+                                <button type="submit" class="btn btn-danger" onclick="return confirm('{{ $confirmMsg }}');">
                                     <i class="mdi mdi-trash-can"></i>
                                 </button>
                             </form>

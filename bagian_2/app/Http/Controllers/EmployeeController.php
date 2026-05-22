@@ -2,16 +2,28 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Http\Requests\StoreEmployeeRequest;
+use App\Http\Requests\UpdateEmployeeRequest;
+use App\Models\Employee;
+use App\Services\EmployeeService;
 
 class EmployeeController extends Controller
 {
+    protected EmployeeService $employeeService;
+
+    public function __construct(EmployeeService $employeeService)
+    {
+        $this->employeeService = $employeeService;
+    }
+
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        //
+        $employees = $this->employeeService->paginateList();
+
+        return view('employees.index', compact('employees'));
     }
 
     /**
@@ -19,46 +31,56 @@ class EmployeeController extends Controller
      */
     public function create()
     {
-        //
+        return view('employees.create');
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreEmployeeRequest $request)
     {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
+        try {
+            $this->employeeService->store($request->validated());
+            return redirect()->route('employees.index')->with('success', 'Employee tersimpan!');
+        } catch (\Throwable $e) {
+            return redirect()->back()->withInput()->with('error', 'Gagal menyimpan employee');
+        }
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(Employee $employee)
     {
-        //
+        // Eager load company agar select2 bisa pre-fill dengan label
+        $employee->load('company:id,name');
+        return view('employees.edit', compact('employee'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(UpdateEmployeeRequest $request, Employee $employee)
     {
-        //
+        try {
+            $this->employeeService->update($employee->id, $request->validated());
+            return redirect()->route('employees.index')->with('success', 'Employee berhasil diupdate!');
+        } catch (\Throwable $e) {
+            return redirect()->back()->withInput()->with('error', 'Gagal mengupdate employee');
+        }
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Employee $employee)
     {
-        //
+        $result = $this->employeeService->delete($employee->id);
+
+        if ($result) {
+            return redirect()->back()->with('success', 'Employee Berhasil Dihapus');
+        }
+
+        return redirect()->back()->with('error', 'Terjadi kesalahan saat menghapus');
     }
 }

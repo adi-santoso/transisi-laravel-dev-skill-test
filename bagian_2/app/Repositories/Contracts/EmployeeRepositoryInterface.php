@@ -4,11 +4,10 @@ namespace App\Repositories\Contracts;
 
 use Illuminate\Pagination\LengthAwarePaginator;
 
-interface CompanyRepositoryInterface
+interface EmployeeRepositoryInterface
 {
 
     public function paginateList(): LengthAwarePaginator;
-    public function paginateForSelect2(?string $search, int $page, int $perPage = 10): LengthAwarePaginator;
     public function find($id);
     public function create(array $data);
     public function update($id, array $data);

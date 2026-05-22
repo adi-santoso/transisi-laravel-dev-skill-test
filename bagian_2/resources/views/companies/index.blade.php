@@ -53,6 +53,10 @@
                                 </button>
                             </form>
 
+                            <a href="{{ route('companies.export-employees', $company->id) }}" class="btn btn-info" target="_blank">
+                                Export Employee
+                            </a>
+
                         </div>
                     </td>
                 </tr>

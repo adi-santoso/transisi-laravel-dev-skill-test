@@ -17,6 +17,8 @@ Route::middleware(['auth'])->group(function(){
     // Custom routes (harus di atas resource agar tidak konflik dengan {company} param)
     Route::get('/companies/{company}/logo', [CompanyController::class, 'logo'])
         ->name('companies.logo');
+    Route::get('/companies/{company}/export-employees', [CompanyController::class, 'exportEmployees'])
+        ->name('companies.export-employees');
     Route::get('/companies-select2', [CompanyController::class, 'select2'])
         ->name('companies.select2');
 

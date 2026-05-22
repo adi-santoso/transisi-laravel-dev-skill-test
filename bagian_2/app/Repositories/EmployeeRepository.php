@@ -5,6 +5,7 @@ namespace App\Repositories;
 use App\Models\Employee;
 use App\Repositories\Contracts\EmployeeRepositoryInterface;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
 
 class EmployeeRepository implements EmployeeRepositoryInterface {
 
@@ -20,6 +21,14 @@ class EmployeeRepository implements EmployeeRepositoryInterface {
         return $this->model->query()
             ->with('company:id,name')
             ->paginate(5);
+    }
+
+    public function getByCompany(int $companyId): Collection
+    {
+        return $this->model->query()
+            ->where('company_id', $companyId)
+            ->orderBy('name')
+            ->get();
     }
 
     public function find($id)

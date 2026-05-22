@@ -6,6 +6,7 @@ use App\Http\Requests\StoreCompanyRequest;
 use App\Http\Requests\UpdateCompanyRequest;
 use App\Models\Company;
 use App\Services\CompanyService;
+use App\Services\EmployeeService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -13,10 +14,12 @@ use Illuminate\Support\Facades\Storage;
 class CompanyController extends Controller
 {
     protected CompanyService $companyService;
+    protected EmployeeService $employeeService;
 
-    public function __construct(CompanyService $companyService)
+    public function __construct(CompanyService $companyService, EmployeeService $employeeService)
     {
         $this->companyService = $companyService;
+        $this->employeeService = $employeeService;
     }
 
     /**
@@ -107,7 +110,6 @@ class CompanyController extends Controller
      */
     public function select2(Request $request): JsonResponse
     {
-        // Mode fetch single by ID (untuk preserve old input setelah validation failure)
         if ($request->filled('id')) {
             $company = $this->companyService->find($request->input('id'));
 
@@ -129,4 +131,21 @@ class CompanyController extends Controller
             ],
         ]);
     }
+
+    /**
+     * Export PDF list employee untuk company tertentu.
+     */
+    public function exportEmployees(Company $company)
+    {
+        try {
+            return $this->employeeService->exportPdfByCompany($company);
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::error('PDF export failed', [
+                'company_id' => $company->id,
+                'error' => $e->getMessage(),
+            ]);
+            return redirect()->back()->with('error', 'Gagal generate PDF: ' . $e->getMessage());
+        }
+    }
 }
+

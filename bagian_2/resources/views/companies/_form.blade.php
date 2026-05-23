@@ -26,7 +26,7 @@
             </div>
         @endif
 
-        <input class="form-control @error('logo') is-invalid @enderror" type="file" name="logo" value="{{old('logo', $company->logo ?? '')}}" {{ isset($company) ? '' : 'required' }}>
+        <input class="form-control @error('logo') is-invalid @enderror" type="file" name="logo" accept="image/png, .png" value="{{old('logo', $company->logo ?? '')}}" {{ isset($company) ? '' : 'required' }}>
         @error('logo')
         <div class="invalid-feedback">{{$message}}</div>
         @enderror

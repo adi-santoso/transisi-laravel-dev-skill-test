@@ -2,14 +2,18 @@
 
 namespace App\Services;
 
+use App\Imports\EmployeesImport;
+use App\Imports\EmployeesValidator;
 use App\Models\Company;
 use App\Repositories\Contracts\EmployeeRepositoryInterface;
 use Barryvdh\Snappy\PdfWrapper;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Response;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
+use Maatwebsite\Excel\Facades\Excel;
 
 class EmployeeService
 {
@@ -110,5 +114,77 @@ class EmployeeService
         $filename = 'employees-' . str()->slug($company->name) . '-' . now()->format('YmdHis') . '.pdf';
 
         return $pdf->download($filename);
+    }
+
+    /**
+     * Import employees dari file Excel dengan strategi all-or-nothing.
+     *
+     * Two-pass approach:
+     *   Pass 1: EmployeesValidator scan semua row, collect SEMUA error.
+     *           Kalau ada minimal 1 error → return tanpa insert apapun.
+     *   Pass 2: EmployeesImport insert via chunk per 10 (sudah dijamin valid).
+     *
+     * Database tidak akan terpengaruh kalau ada satupun row yang gagal validasi.
+     *
+     * @return array{success: bool, errors: array, imported_count: int}
+     */
+    public function importFromExcel(UploadedFile $file): array
+    {
+        // Pass 1: Validate semua row tanpa insert apapun
+        $validator = new EmployeesValidator();
+        Excel::import($validator, $file);
+
+        if ($validator->hasErrors()) {
+            Log::warning('Excel import dibatalkan karena validasi gagal', [
+                'failure_count' => count($validator->getErrors()),
+            ]);
+
+            return [
+                'success' => false,
+                'errors' => $validator->getErrors(),
+                'imported_count' => 0,
+            ];
+        }
+
+        // Pass 2: Insert (sudah dijamin valid). Wrap dalam transaction untuk safety
+        // — jika ada error tak terduga di tengah jalan (constraint violation, dll),
+        // semua chunk yang sudah di-insert akan ikut ter-rollback.
+        try {
+            DB::transaction(function () use ($file) {
+                $import = new EmployeesImport();
+                Excel::import($import, $file);
+            });
+
+            // Re-read file untuk hitung jumlah row yang di-import (heading row tidak dihitung)
+            $rowCount = $this->countDataRows($file);
+
+            Log::info('Excel import sukses', ['imported_count' => $rowCount]);
+
+            return [
+                'success' => true,
+                'errors' => [],
+                'imported_count' => $rowCount,
+            ];
+        } catch (\Throwable $e) {
+            Log::error('Excel import gagal di tahap insert', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+
+            throw $e;
+        }
+    }
+
+    /**
+     * Hitung jumlah row data (tidak termasuk heading) di file Excel.
+     * Dipakai untuk reporting jumlah yang ke-import.
+     */
+    private function countDataRows(UploadedFile $file): int
+    {
+        $array = Excel::toArray(null, $file);
+        $sheet = $array[0] ?? [];
+
+        // -1 untuk skip heading row
+        return max(0, count($sheet) - 1);
     }
 }

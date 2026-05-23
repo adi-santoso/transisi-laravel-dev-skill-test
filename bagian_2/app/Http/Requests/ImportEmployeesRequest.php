@@ -1,0 +1,34 @@
+<?php
+
+namespace App\Http\Requests;
+
+use Illuminate\Foundation\Http\FormRequest;
+
+class ImportEmployeesRequest extends FormRequest
+{
+    public function authorize(): bool
+    {
+        return true;
+    }
+
+    public function rules(): array
+    {
+        return [
+            'file' => [
+                'required',
+                'file',
+                'mimes:xlsx,xls,csv',
+                'max:5120', // 5 MB
+            ],
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'file.required' => 'File excel wajib di-upload.',
+            'file.mimes' => 'File harus berformat xlsx, xls, atau csv.',
+            'file.max' => 'Ukuran file maksimal 5MB.',
+        ];
+    }
+}

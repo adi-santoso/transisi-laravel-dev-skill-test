@@ -2,8 +2,11 @@
 
 @section('content')
     <div class="d-flex flex-column">
-        <div class="d-flex justify-content-end">
-            <a href="{{route('employees.create')}}"  class=" btn btn-primary justify-content-end">Tambah Employee</a>
+        <div class="d-flex justify-content-end gap-2">
+            <a href="{{ route('employees.import.form') }}" class="btn btn-success">
+                <i class="mdi mdi-file-excel"></i> Import Excel
+            </a>
+            <a href="{{route('employees.create')}}"  class=" btn btn-primary">Tambah Employee</a>
         </div>
 
         <table class="table table-hover">

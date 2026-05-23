@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ImportEmployeesRequest;
 use App\Http\Requests\StoreEmployeeRequest;
 use App\Http\Requests\UpdateEmployeeRequest;
 use App\Models\Employee;
@@ -82,5 +83,36 @@ class EmployeeController extends Controller
         }
 
         return redirect()->back()->with('error', 'Terjadi kesalahan saat menghapus');
+    }
+
+    /**
+     * Tampilkan form untuk import Excel.
+     */
+    public function importForm()
+    {
+        return view('employees.import');
+    }
+
+    /**
+     * Process import file Excel.
+     */
+    public function import(ImportEmployeesRequest $request)
+    {
+        try {
+            $result = $this->employeeService->importFromExcel($request->file('file'));
+
+            if (!$result['success']) {
+                $errorCount = count($result['errors']);
+                return redirect()->route('employees.import.form')
+                    ->with('error', "Import dibatalkan. Ditemukan {$errorCount} baris dengan error. Tidak ada data yang masuk ke database.")
+                    ->with('importErrors', $result['errors']);
+            }
+
+            return redirect()->route('employees.index')
+                ->with('success', "Import berhasil! {$result['imported_count']} employee ditambahkan.");
+        } catch (\Throwable $e) {
+            return redirect()->route('employees.import.form')
+                ->with('error', 'Gagal import: ' . $e->getMessage());
+        }
     }
 }

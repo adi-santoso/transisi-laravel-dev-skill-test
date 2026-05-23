@@ -2,6 +2,55 @@
 
 Implementasi CRUD `companies` dan `employees` menggunakan Laravel 11 + `laravel/ui` (Bootstrap 5), Repository Pattern, Service layer, upload logo private, export PDF, dan import Excel all-or-nothing.
 
+## Requirement / Prerequisites
+
+Sebelum menjalankan project ini, pastikan dependency berikut tersedia:
+
+### System
+
+- PHP `8.2` atau lebih baru
+- Composer
+- Node.js dan npm
+- Database: SQlite
+- `wkhtmltopdf` binary untuk fitur export PDF
+
+### PHP Extensions
+
+Extension yang perlu aktif agar Laravel, upload image, dan import Excel berjalan normal:
+
+- `bcmath`
+- `ctype`
+- `fileinfo`
+- `json`
+- `mbstring`
+- `openssl`
+- `pdo`
+- `tokenizer`
+- `xml`
+- `zip`
+- `gd`
+
+### Composer Packages Utama
+
+Dependency utama yang digunakan project ini:
+
+- `laravel/framework:^11.31`
+- `laravel/ui:^4.6`
+- `barryvdh/laravel-snappy:^1.0`
+- `maatwebsite/excel:^3.1`
+
+### Frontend / Build Tools
+
+- `vite`
+- `bootstrap 5`
+- `sass`
+
+Catatan:
+
+- `select2`, `jQuery`, dan Material Design Icons dimuat via CDN di layout aplikasi
+- Jika hanya ingin reviewer menjalankan aplikasi, dependency frontend cukup di-install lewat `npm install`
+- Jika hanya ingin melihat source code tanpa compile asset ulang, dependency npm tetap saya sarankan agar environment konsisten
+
 ## Akun Login
 
 - Email: `admin@transisi.id`

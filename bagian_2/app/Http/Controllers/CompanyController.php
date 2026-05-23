@@ -46,7 +46,13 @@ class CompanyController extends Controller
     public function store(StoreCompanyRequest $request)
     {
         try {
-            $this->companyService->store($request->validated(), $request->file('logo'));
+            // tmp_logo di-validate format-nya di FormRequest (regex UUID + file exist).
+            // Service yang handle resolusi: file baru > tmp logo > error.
+            $this->companyService->store(
+                $request->validated(),
+                $request->file('logo'),
+                $request->hasValidTmpLogo() ? $request->input('tmp_logo') : null,
+            );
             return redirect()->route('companies.index')->with('success', 'Company tersimpan!');
         } catch (\Throwable $e) {
             return redirect()->back()->withInput()->with('error', 'Gagal menyimpan company');
@@ -67,7 +73,12 @@ class CompanyController extends Controller
     public function update(UpdateCompanyRequest $request, Company $company)
     {
         try {
-            $this->companyService->update($company->id, $request->validated(), $request->file('logo'));
+            $this->companyService->update(
+                $company->id,
+                $request->validated(),
+                $request->file('logo'),
+                $request->hasValidTmpLogo() ? $request->input('tmp_logo') : null,
+            );
             return redirect()->route('companies.index')->with('success', 'Company berhasil diupdate!');
         } catch (\Throwable $e) {
             return redirect()->back()->withInput()->with('error', 'Gagal mengupdate company');
@@ -148,4 +159,3 @@ class CompanyController extends Controller
         }
     }
 }
-

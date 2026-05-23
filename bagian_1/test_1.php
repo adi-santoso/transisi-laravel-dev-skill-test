@@ -2,11 +2,15 @@
 <?php
 $nilai = array(72, 65, 73, 78, 75, 74, 90, 81, 87, 65, 55, 69, 72, 78, 79, 91, 100, 40, 67, 77, 86);
 
-rsort($nilai);
+$nilaiDesc = $nilai;
+rsort($nilaiDesc);
+
+$nilaiAsc = $nilai;
+sort($nilaiAsc);
 
 $avgValue =  array_sum($nilai) / count($nilai);
-$topSevenVal = array_slice($nilai, 0, 7);
-$lowestSevenVal = array_slice($nilai, -7);
+$topSevenVal = array_slice($nilaiDesc, 0, 7);
+$lowestSevenVal = array_slice($nilaiAsc, 0, 7);
 ?>
 
 <div style="padding: 1rem">

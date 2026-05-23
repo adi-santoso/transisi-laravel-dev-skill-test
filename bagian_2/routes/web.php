@@ -9,7 +9,7 @@ Route::get('/', function () {
     return redirect()->route('login');
 });
 
-Auth::routes();
+Auth::routes(['register' => false]);
 
 Route::middleware(['auth'])->group(function(){
     Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
@@ -31,5 +31,4 @@ Route::middleware(['auth'])->group(function(){
     Route::resource('/companies', CompanyController::class)->except(['show']);
     Route::resource('/employees', EmployeeController::class)->except(['show']);
 });
-
 

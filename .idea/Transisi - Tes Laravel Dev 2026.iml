@@ -121,6 +121,16 @@
       <excludeFolder url="file://$MODULE_DIR$/bagian_2/vendor/tijsverkoyen/css-to-inline-styles" />
       <excludeFolder url="file://$MODULE_DIR$/bagian_2/vendor/vlucas/phpdotenv" />
       <excludeFolder url="file://$MODULE_DIR$/bagian_2/vendor/voku/portable-ascii" />
+      <excludeFolder url="file://$MODULE_DIR$/bagian_2/storage/app" />
+      <excludeFolder url="file://$MODULE_DIR$/bagian_2/storage/framework" />
+      <excludeFolder url="file://$MODULE_DIR$/bagian_2/vendor/barryvdh/laravel-snappy" />
+      <excludeFolder url="file://$MODULE_DIR$/bagian_2/vendor/ezyang/htmlpurifier" />
+      <excludeFolder url="file://$MODULE_DIR$/bagian_2/vendor/knplabs/knp-snappy" />
+      <excludeFolder url="file://$MODULE_DIR$/bagian_2/vendor/maatwebsite/excel" />
+      <excludeFolder url="file://$MODULE_DIR$/bagian_2/vendor/maennchen/zipstream-php" />
+      <excludeFolder url="file://$MODULE_DIR$/bagian_2/vendor/markbaker/complex" />
+      <excludeFolder url="file://$MODULE_DIR$/bagian_2/vendor/markbaker/matrix" />
+      <excludeFolder url="file://$MODULE_DIR$/bagian_2/vendor/phpoffice/phpspreadsheet" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
